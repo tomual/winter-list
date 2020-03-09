@@ -12,11 +12,15 @@ import store from './Store'
 class HomeScreen extends Component {
 
     onAddTodo = (text) => {
-        store.dispatch(actionCreators.add(text))
+        store.dispatch(actionCreators.add(text));
+        storeData();
     }
 
     onRemoveTodo = (index) => {
-        store.dispatch(actionCreators.remove(index))
+        setTimeout(function() {
+            store.dispatch(actionCreators.remove(index));
+        }, 300);
+        storeData();
     }
 
     menuIcon = (style) => (
@@ -93,40 +97,30 @@ const styles = StyleSheet.create({
 
 export const storeData = async () => {
     try {
-        await AsyncStorage.setItem('TASKS', 'I like to save it.');
+        await AsyncStorage.setItem('TASKS', JSON.stringify(store.getState()))
     } catch (error) {
-        // Error saving data
+        console.error('Error saving')
     }
 };
 
 export const retrieveData = async () => {
-    let value = 'No';
+    let value = { todos: [] };
     try {
-        const value = await AsyncStorage.getItem('TASKS');
+        const string = await AsyncStorage.getItem('TASKS')
         if (value !== null) {
-            // We have data!!
-            console.log(value);
+            value = JSON.parse(string);
         }
     } catch (error) {
-        // Error retrieving data
+        console.log('Error loading')
     }
-    // return value;
-    return {
-        todos: [
-            { title: '1 Dark Souls I' },
-            { title: '1 Dark Souls II' },
-            { title: '1 Dark Souls III' },
-            { title: 'retrieveData()' },
-        ]
-    }
+    return value;
 };
 
 export const loadData = async () => {
-    let thingo = await retrieveData().then((thingo) => {
-        console.log(thingo);
-        thingo.todos.map(item => {
-            store.dispatch(actionCreators.add(item))
-        })
+    let data = await retrieveData().then((data) => {
+        for (var i = data.todos.length - 1; i >= 0; i--) {
+            store.dispatch(actionCreators.add(data.todos[i]))
+        }
     });
 
 }    
