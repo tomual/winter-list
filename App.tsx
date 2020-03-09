@@ -1,36 +1,132 @@
-import * as React from 'react';
-import { Button, View } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { Component } from 'react'
+import { View, StyleSheet, SafeAreaView, AsyncStorage } from 'react-native'
+import { ApplicationProvider, Divider, IconRegistry, Layout, Text, TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components';
+import { mapping, light as lightTheme, dark as darkTheme } from '@eva-design/eva';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
-function HomeScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Button
-                onPress={() => navigation.navigate('Notifications')}
-                title="Go to notifications"
-            />
-        </View>
+import { actionCreators } from './Redux'
+import List from './List'
+import Input from './Input'
+import store from './Store'
+
+class HomeScreen extends Component {
+
+    onAddTodo = (text) => {
+        store.dispatch(actionCreators.add(text))
+    }
+
+    onRemoveTodo = (index) => {
+        store.dispatch(actionCreators.remove(index))
+    }
+
+    menuIcon = (style) => (
+        <Icon {...style} name='menu-outline' />
     );
+
+    backAction = () => (
+        <TopNavigationAction icon={this.menuIcon} />
+    );
+
+    render() {
+        const { todos } = this.props
+        return (
+            <SafeAreaView style={styles.container} >
+                <TopNavigation
+                    title='Center'
+                    alignment='center'
+                    leftControl={this.backAction()}
+                    style={styles.topnav}
+                />
+                <Divider />
+                <Layout style={styles.layout}>
+                    <Input placeholder={'Type a new task'} onSubmitEditing={this.onAddTodo} />
+                </Layout>
+                <List list={todos} onPressItem={this.onRemoveTodo} />
+            </SafeAreaView>
+        )
+
+    }
+};
+
+export default class App extends Component {
+
+    state = {}
+
+    UNSAFE_componentWillMount() {
+        const { todos } = store.getState()
+        this.setState({ todos })
+
+        this.unsubscribe = store.subscribe(() => {
+            const { todos } = store.getState()
+            this.setState({ todos })
+        })
+        loadData();
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe()
+    }
+
+    render() {
+        const { todos } = this.state
+        return (
+            <React.Fragment>
+                <IconRegistry icons={EvaIconsPack} />
+                <ApplicationProvider mapping={mapping} theme={darkTheme}>
+                    <HomeScreen todos={todos} />
+                </ApplicationProvider>
+            </React.Fragment>
+        )
+    }
 }
 
-function NotificationsScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Button onPress={() => navigation.goBack()} title="Go back home" />
-        </View>
-    );
-}
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#222b45',
+        paddingTop: 20
+    },
+    layout: {
+        padding: 16,
+    },
+});
 
-const Drawer = createDrawerNavigator();
+export const storeData = async () => {
+    try {
+        await AsyncStorage.setItem('TASKS', 'I like to save it.');
+    } catch (error) {
+        // Error saving data
+    }
+};
 
-export default function App() {
-    return (
-        <NavigationContainer>
-            <Drawer.Navigator initialRouteName="Home">
-                <Drawer.Screen name="Home" component={HomeScreen} />
-                <Drawer.Screen name="Notifications" component={NotificationsScreen} />
-            </Drawer.Navigator>
-        </NavigationContainer>
-    );
-}
+export const retrieveData = async () => {
+    let value = 'No';
+    try {
+        const value = await AsyncStorage.getItem('TASKS');
+        if (value !== null) {
+            // We have data!!
+            console.log(value);
+        }
+    } catch (error) {
+        // Error retrieving data
+    }
+    // return value;
+    return {
+        todos: [
+            { title: '1 Dark Souls I' },
+            { title: '1 Dark Souls II' },
+            { title: '1 Dark Souls III' },
+            { title: 'retrieveData()' },
+        ]
+    }
+};
+
+export const loadData = async () => {
+    let thingo = await retrieveData().then((thingo) => {
+        console.log(thingo);
+        thingo.todos.map(item => {
+            store.dispatch(actionCreators.add(item))
+        })
+    });
+
+}    

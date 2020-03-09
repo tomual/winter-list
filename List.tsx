@@ -41,7 +41,9 @@ export default class List extends Component {
 const styles = StyleSheet.create({
     list: {
         flex: 1,
-        backgroundColor: '#222b45'
+        backgroundColor: '#222b45',
+        paddingLeft: 16,
+        paddingRight: 16
     },
     listItem: {
         height: 55

@@ -14,9 +14,9 @@ export const actionCreators = {
 
 const initialState = {
     todos: [
-        { title: 'Dark Souls I' },
-        { title: 'Dark Souls II' },
-        { title: 'Dark Souls III' },
+        // { title: 'Dark Souls I' },
+        // { title: 'Dark Souls II' },
+        // { title: 'Dark Souls III' },
     ]
 }
 
