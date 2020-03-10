@@ -21,8 +21,8 @@ class HomeScreen extends Component {
     onRemoveTodo = (index) => {
         setTimeout(function() {
             store.dispatch(actionCreators.remove(index));
+            storeData();
         }, 300);
-        storeData();
     }
 
     menuIcon = (style) => (
@@ -35,8 +35,6 @@ class HomeScreen extends Component {
 
     render() {
         const { todos, navigation } = this.props
-
-        console.log(navigation);
         return (
             <SafeAreaView style={styles.container} >
                 <TopNavigation
@@ -72,18 +70,18 @@ const DrawerContent = ({ navigation, state }) => {
 const Drawer = createDrawerNavigator();
 export default class App extends Component {
 
-    state = {}
-
     UNSAFE_componentWillMount() {
-        const { todos } = store.getState()
-        this.setState({ todos })
+        const { todos, page } = store.getState()
+        this.setState({ todos: todos })
 
         this.unsubscribe = store.subscribe(() => {
-            const { todos } = store.getState()
-            this.setState({ todos })
+            const { todos, page } = store.getState()
+            this.setState({ todos: todos })
         })
-        loadData();
+        loadData(page);
     }
+
+
 
     componentWillUnmount() {
         this.unsubscribe()
@@ -97,7 +95,7 @@ export default class App extends Component {
                 <ApplicationProvider mapping={mapping} theme={darkTheme}>
                     <NavigationContainer>
                         <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />}>
-                            <Drawer.Screen name="Home" component={(props) => <HomeScreen todos={todos} {...props} />} />
+                            <Drawer.Screen name="Home" children={(props) => <HomeScreen todos={todos} {...props} />} />
                         </Drawer.Navigator>
                     </NavigationContainer>
                 </ApplicationProvider>
@@ -138,10 +136,12 @@ export const retrieveData = async () => {
     return value;
 };
 
-export const loadData = async () => {
+export const loadData = async (page) => {
+    console.log(page)
     let data = await retrieveData().then((data) => {
-        for (var i = data.todos.length - 1; i >= 0; i--) {
-            store.dispatch(actionCreators.add(data.todos[i]))
+        for (var i = data[page].length - 1; i >= 0; i--) {
+            console.log(page)
+            store.dispatch(actionCreators.add(data[page][i]))
         }
     });
 

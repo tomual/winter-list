@@ -13,6 +13,7 @@ export const actionCreators = {
 }
 
 const initialState = {
+    page: 'todos',
     todos: [
         // { title: 'Dark Souls I' },
         // { title: 'Dark Souls II' },
