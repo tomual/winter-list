@@ -48,6 +48,7 @@ class HomeScreen extends Component {
                 <List list={todos} onPressItem={this.onRemoveTodo} />
             </SafeAreaView>
         )
+
     }
 };
 
