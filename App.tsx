@@ -1,126 +1,74 @@
-import React, { Component } from 'react'
-import { View, StyleSheet, SafeAreaView, AsyncStorage } from 'react-native'
-import { ApplicationProvider, Divider, IconRegistry, Layout, Text, TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components';
-import { mapping, light as lightTheme, dark as darkTheme } from '@eva-design/eva';
-import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
+import React, { Component } from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
+import DrawerScreen1 from './DrawerScreen1';
+import DrawerScreen2 from './DrawerScreen2';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
 
-import { actionCreators } from './Redux'
-import List from './List'
-import Input from './Input'
-import store from './Store'
-
-class HomeScreen extends Component {
-
-    onAddTodo = (text) => {
-        store.dispatch(actionCreators.add(text));
-        storeData();
-    }
-
-    onRemoveTodo = (index) => {
-        setTimeout(function() {
-            store.dispatch(actionCreators.remove(index));
-        }, 300);
-        storeData();
-    }
-
-    menuIcon = (style) => (
-        <Icon {...style} name='menu-outline' />
-    );
-
-    backAction = () => (
-        <TopNavigationAction icon={this.menuIcon} />
-    );
-
-    render() {
-        const { todos } = this.props
-        return (
-            <SafeAreaView style={styles.container} >
-                <TopNavigation
-                    title='Center'
-                    alignment='center'
-                    leftControl={this.backAction()}
-                    style={styles.topnav}
-                />
-                <Divider />
-                <Layout style={styles.layout}>
-                    <Input placeholder={'Type a new task'} onSubmitEditing={this.onAddTodo} />
-                </Layout>
-                <List list={todos} onPressItem={this.onRemoveTodo} />
-            </SafeAreaView>
-        )
-
-    }
-};
-
-export default class App extends Component {
-
-    state = {}
-
-    UNSAFE_componentWillMount() {
-        const { todos } = store.getState()
-        this.setState({ todos })
-
-        this.unsubscribe = store.subscribe(() => {
-            const { todos } = store.getState()
-            this.setState({ todos })
-        })
-        loadData();
-    }
-
-    componentWillUnmount() {
-        this.unsubscribe()
-    }
-
-    render() {
-        const { todos } = this.state
-        return (
-            <React.Fragment>
-                <IconRegistry icons={EvaIconsPack} />
-                <ApplicationProvider mapping={mapping} theme={darkTheme}>
-                    <HomeScreen todos={todos} />
-                </ApplicationProvider>
-            </React.Fragment>
-        )
-    }
-}
-
+const Drawer = createDrawerNavigator();
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#222b45',
         paddingTop: 20
-    },
-    layout: {
-        padding: 16,
     },
 });
 
-export const storeData = async () => {
-    try {
-        await AsyncStorage.setItem('TASKS', JSON.stringify(store.getState()))
-    } catch (error) {
-        console.error('Error saving')
+class CustomDrawerContent extends Component {
+    render() {
+        const { customProp, navigation } = this.props
+        console.log(customProp)
+        return (
+            <SafeAreaProvider>
+                <ScrollView
+                    style={styles.container}
+                >
+                    <DrawerItem
+                        label="Screen1"
+                        onPress={() => navigation.navigate('DrawerScreen1')}
+                    />
+                    <DrawerItem
+                        label="Screen2"
+                        onPress={() => navigation.navigate('DrawerScreen2')}
+                    />
+                    <DrawerItem
+                        label="Close"
+                        onPress={() => navigation.closeDrawer()}
+                    />
+                </ScrollView>
+
+            </SafeAreaProvider>
+        );
     }
-};
+}
 
-export const retrieveData = async () => {
-    let value = { todos: [] };
-    try {
-        const string = await AsyncStorage.getItem('TASKS')
-        if (value !== null) {
-            value = JSON.parse(string);
-        }
-    } catch (error) {
-        console.log('Error loading')
+class Navigator extends Component {
+    render() {
+        return (
+
+            <NavigationContainer>
+                <Drawer.Navigator
+                    drawerContent={props => <CustomDrawerContent {...this.props} />}
+                >
+                    <Drawer.Screen
+                        name="DrawerScreen1"
+                        component={DrawerScreen1} />
+                    <Drawer.Screen
+                        name="DrawerScreen2"
+                        component={DrawerScreen2} />
+                </Drawer.Navigator>
+
+            </NavigationContainer>
+        );
     }
-    return value;
-};
+}
 
-export const loadData = async () => {
-    let data = await retrieveData().then((data) => {
-        for (var i = data.todos.length - 1; i >= 0; i--) {
-            store.dispatch(actionCreators.add(data.todos[i]))
-        }
-    });
 
-}    
+export default class App extends Component {
+
+    render() {
+        return (
+            <Navigator customProp="right" />
+        );
+    }
+}
