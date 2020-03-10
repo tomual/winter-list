@@ -13,29 +13,31 @@ export const actionCreators = {
 }
 
 const initialState = {
-    page: 'todos',
-    todos: [
-        // { title: 'Dark Souls I' },
-        // { title: 'Dark Souls II' },
-        // { title: 'Dark Souls III' },
-    ]
+    page: 'Inbox',
+    lists: {
+        "Inbox" : [
+            // { title: 'Dark Souls I' },
+            // { title: 'Dark Souls II' },
+            // { title: 'Dark Souls III' },
+        ]
+    }
 }
 
 export const reducer = (state = initialState, action) => {
-    const { todos } = state
+    const { lists, page } = state
     const { type, payload } = action
 
     switch (type) {
         case types.ADD: {
             return {
                 ...state,
-                todos: [payload, ...todos]
+                lists: {[page]: [payload, ...lists[page]]}
             }
         }
         case types.REMOVE: {
             return {
                 ...state,
-                todos: todos.filter((todo, i) => i !== payload)
+                lists: {[page]: lists[page].filter((todo, i) => i !== payload)}
             }
         }
     }

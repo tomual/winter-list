@@ -11,7 +11,7 @@ import List from './List'
 import Input from './Input'
 import store from './Store'
 
-class HomeScreen extends Component {
+class ListScreen extends Component {
 
     onAddTodo = (text) => {
         store.dispatch(actionCreators.add(text));
@@ -71,31 +71,29 @@ const Drawer = createDrawerNavigator();
 export default class App extends Component {
 
     UNSAFE_componentWillMount() {
-        const { todos, page } = store.getState()
-        this.setState({ todos: todos })
+        const { lists, page } = store.getState()
+        this.setState({ lists: lists, page: page })
 
         this.unsubscribe = store.subscribe(() => {
-            const { todos, page } = store.getState()
-            this.setState({ todos: todos })
+            const { lists, page } = store.getState()
+            this.setState({ lists: lists, page: page })
         })
         loadData(page);
     }
-
-
 
     componentWillUnmount() {
         this.unsubscribe()
     }
 
     render() {
-        const { todos } = this.state
+        const { lists, page } = this.state
         return (
             <React.Fragment>
                 <IconRegistry icons={EvaIconsPack} />
                 <ApplicationProvider mapping={mapping} theme={darkTheme}>
                     <NavigationContainer>
                         <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />}>
-                            <Drawer.Screen name="Home" children={(props) => <HomeScreen todos={todos} {...props} />} />
+                            <Drawer.Screen name="Home" children={(props) => <ListScreen todos={lists[page]} {...props} />} />
                         </Drawer.Navigator>
                     </NavigationContainer>
                 </ApplicationProvider>
@@ -124,7 +122,13 @@ export const storeData = async () => {
 };
 
 export const retrieveData = async () => {
-    let value = { todos: [] };
+    let value = {
+        page: 'Inbox',
+        lists: {
+            "Inbox" : [
+            ]
+        }
+    };
     try {
         const string = await AsyncStorage.getItem('TASKS')
         if (value !== null) {
@@ -137,11 +141,9 @@ export const retrieveData = async () => {
 };
 
 export const loadData = async (page) => {
-    console.log(page)
     let data = await retrieveData().then((data) => {
-        for (var i = data[page].length - 1; i >= 0; i--) {
-            console.log(page)
-            store.dispatch(actionCreators.add(data[page][i]))
+        for (var i = data.lists[page].length - 1; i >= 0; i--) {
+            store.dispatch(actionCreators.add(data.lists[page][i]))
         }
     });
 
