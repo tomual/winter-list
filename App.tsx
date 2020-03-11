@@ -10,6 +10,8 @@ import { actionCreators } from './Redux'
 import List from './List'
 import Input from './Input'
 import store from './Store'
+import { BookIcon } from './Icons'
+import { HomeDrawer } from './HomeDrawer'
 
 class ListScreen extends Component {
 
@@ -34,11 +36,11 @@ class ListScreen extends Component {
     );
 
     render() {
-        const { todos, navigation } = this.props
+        const { todos, navigation, page } = this.props
         return (
             <SafeAreaView style={styles.container} >
                 <TopNavigation
-                    title='Center'
+                    title={page}
                     alignment='center'
                     leftControl={this.backAction(navigation)}
                     style={styles.topnav}
@@ -53,14 +55,19 @@ class ListScreen extends Component {
     }
 };
 
-const DrawerContent = ({ navigation, state }) => {
+const DrawerContent = ({ navigation, state, todos }) => {
+    console.log(todos)
+
     const onSelect = (index) => {
         navigation.navigate(state.routeNames[index]);
     };
 
     return (
         <UIKittenDrawer
-            data={[{ title: 'Home' }, { title: 'Settings' }]}
+            data={[
+                { title: 'Home', icon: BookIcon },
+                { title: 'Settings' },
+            ]}
             selectedIndex={state.index}
             onSelect={onSelect}
         />
@@ -92,8 +99,8 @@ export default class App extends Component {
                 <IconRegistry icons={EvaIconsPack} />
                 <ApplicationProvider mapping={mapping} theme={darkTheme}>
                     <NavigationContainer>
-                        <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />}>
-                            <Drawer.Screen name="Home" children={(props) => <ListScreen todos={lists[page]} {...props} />} />
+                        <Drawer.Navigator initialRouteName="Inbox" drawerContent={(props) => <HomeDrawer todos={lists} {...props} />}>
+                            <Drawer.Screen name="Inbox" children={(props) => <ListScreen page={page} todos={lists[page]} {...props} />} />
                         </Drawer.Navigator>
                     </NavigationContainer>
                 </ApplicationProvider>
@@ -125,7 +132,7 @@ export const retrieveData = async () => {
     let value = {
         page: 'Inbox',
         lists: {
-            "Inbox" : [
+            "Inbox": [
             ]
         }
     };
@@ -135,7 +142,7 @@ export const retrieveData = async () => {
             value = JSON.parse(string);
         }
     } catch (error) {
-        console.log('Error loading')
+        console.error('Error loading')
     }
     return value;
 };
