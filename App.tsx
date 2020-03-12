@@ -90,6 +90,18 @@ export default class App extends Component {
         this.unsubscribe()
     }
 
+    createScreens = (lists) => {
+        let screens = []
+        console.log("WHAT " + lists.length)
+        if (lists.length == 0) {
+            screens.push(<Drawer.Screen key={0} name="Inbox" children={(props) => <ListScreen key={0} pageIndex={0} todos={{list: [], name:"Inbox"}} {...props} />} />)
+        }
+        for (let i = 0; i <= lists.length - 1; i++) {
+            screens.push(<Drawer.Screen key={i} name={lists[i].name + i} children={(props) => <ListScreen key={i} pageIndex={i} todos={lists[i].list} {...props} />} />)
+        }
+        return screens
+    }
+
     render() {
         const { lists, pageIndex } = this.state
         return (
@@ -98,8 +110,7 @@ export default class App extends Component {
                 <ApplicationProvider mapping={mapping} theme={darkTheme}>
                     <NavigationContainer>
                         <Drawer.Navigator initialRouteName="Inbox" drawerContent={(props) => <HomeDrawer lists={lists} {...props} />}>
-                            <Drawer.Screen name="Inbox" children={(props) => <ListScreen pageIndex={pageIndex} todos={lists[pageIndex].list} {...props} />} />
-                            <Drawer.Screen name="Second One" children={(props) => <ListScreen pageIndex={1} todos={lists[1].list} {...props} />} />
+                            {this.createScreens(lists)}
                         </Drawer.Navigator>
                     </NavigationContainer>
                 </ApplicationProvider>
@@ -121,8 +132,7 @@ const styles = StyleSheet.create({
 
 export const storeData = async () => {
     try {
-            console.log(JSON.stringify(store.getState()))
-
+        console.log(store.getState())
         await AsyncStorage.setItem('TASKS', JSON.stringify(store.getState()))
     } catch (error) {
         console.error('Error saving')
@@ -144,9 +154,8 @@ export const retrieveData = async () => {
 
 export const loadData = async (pageIndex) => {
     let data = await retrieveData().then((data) => {
-        for (var i = data.lists[pageIndex].list.length - 1; i >= 0; i--) {
-            store.dispatch(actionCreators.add(data.lists[pageIndex].list[i]))
-            // add a page too
+        for (var i = data.lists.length - 1; i >= 0; i--) {
+            store.dispatch(actionCreators.addList(data.lists[i]))
         }
     });
 }    

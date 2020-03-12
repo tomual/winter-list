@@ -13,6 +13,8 @@ import {
     Text,
 } from '@ui-kitten/components';
 import { BookIcon, GithubIcon } from './Icons'
+import { actionCreators } from './Redux'
+import store from './Store'
 
 export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
 
@@ -21,8 +23,16 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
         { title: 'Second One', icon: BookIcon },
     ];
 
+
+    let menuData = [];
+    for (var i = lists.length - 1; i >= 0; i--) {
+        menuData.push({ title: lists[i].name, icon: GithubIcon })
+    }
+
+
     const onItemSelect = (index: number): void => {
         navigation.navigate(state.routeNames[index]);
+        store.dispatch(actionCreators.setPageIndex(index));
     };
 
     const renderHeader = (): DrawerHeaderElement => (
@@ -57,7 +67,7 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
         <Drawer
             header={renderHeader}
             footer={renderFooter}
-            data={DATA}
+            data={menuData}
             onSelect={onItemSelect}
         />
     );
