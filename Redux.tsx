@@ -27,35 +27,35 @@ export const actionCreators = {
 const initialState = {
     pageIndex: 0,
     lists: [
-        // {
-        //     name: "Inbox",
-        //     list: [
-        //         // {
-        //         //     title: "Dark Souls I"
-        //         // },
-        //         // {
-        //         //     title: "Dark Souls II"
-        //         // },
-        //         // {
-        //         //     title: "Dark Souls III"
-        //         // }
-        //     ]
-        // },
+        {
+            name: "Inbox",
+            list: [
+                {
+                    title: "Dark Souls I"
+                },
+                {
+                    title: "Dark Souls II"
+                },
+                {
+                    title: "Dark Souls III"
+                }
+            ]
+        },
 
-        // {
-        //     name: "Second One",
-        //     list: [
-        //         {
-        //             title: "Dark Souls I"
-        //         },
-        //         {
-        //             title: "Dark Souls II"
-        //         },
-        //         {
-        //             title: "Dark Souls III"
-        //         }
-        //     ]
-        // }
+        {
+            name: "Second One",
+            list: [
+                {
+                    title: "Peter"
+                },
+                {
+                    title: "Pickled"
+                },
+                {
+                    title: "Peppers"
+                }
+            ]
+        }
     ]
 }
 
@@ -84,7 +84,7 @@ export const reducer = (state = initialState, action) => {
         case types.ADD_LIST: {
             state = {
                 ...state,
-                lists: [payload, ...lists]
+                lists: [...lists, payload]
             }
             return state
         }

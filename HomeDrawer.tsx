@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, TouchableHighlight, View, Alert } from 'react-native';
 import {
     Avatar,
     Divider,
@@ -9,12 +9,15 @@ import {
     DrawerHeaderFooter,
     DrawerHeaderFooterElement,
     Layout,
+    Modal,
     MenuItemType,
     Text,
+    Button,
 } from '@ui-kitten/components';
 import { BookIcon, GithubIcon } from './Icons'
 import { actionCreators } from './Redux'
 import store from './Store'
+import { ModalWithBackdropShowcase } from './Modal'
 
 export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
 
@@ -25,14 +28,20 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
 
 
     let menuData = [];
-    for (var i = lists.length - 1; i >= 0; i--) {
+    for (var i = 0; i <= lists.length - 1; i++) {
         menuData.push({ title: lists[i].name, icon: GithubIcon })
     }
+    menuData.push({ title: "Add Item", icon: GithubIcon })
 
 
     const onItemSelect = (index: number): void => {
-        navigation.navigate(state.routeNames[index]);
-        store.dispatch(actionCreators.setPageIndex(index));
+        console.log("INDEX IS " + index + " WHILE LENGTH IS " + lists.length)
+        if (index == lists.length) {
+
+        } else {
+            navigation.navigate(state.routeNames[index]);
+            store.dispatch(actionCreators.setPageIndex(index));
+        }
     };
 
     const renderHeader = (): DrawerHeaderElement => (
@@ -50,6 +59,7 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
                     Kitten Tricks
         </Text>
             </View>
+            <ModalWithBackdropShowcase />
         </Layout>
     );
 

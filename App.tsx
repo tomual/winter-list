@@ -92,7 +92,6 @@ export default class App extends Component {
 
     createScreens = (lists) => {
         let screens = []
-        console.log("WHAT " + lists.length)
         if (lists.length == 0) {
             screens.push(<Drawer.Screen key={0} name="Inbox" children={(props) => <ListScreen key={0} pageIndex={0} todos={{list: [], name:"Inbox"}} {...props} />} />)
         }
@@ -132,7 +131,6 @@ const styles = StyleSheet.create({
 
 export const storeData = async () => {
     try {
-        console.log(store.getState())
         await AsyncStorage.setItem('TASKS', JSON.stringify(store.getState()))
     } catch (error) {
         console.error('Error saving')
@@ -154,7 +152,7 @@ export const retrieveData = async () => {
 
 export const loadData = async (pageIndex) => {
     let data = await retrieveData().then((data) => {
-        for (var i = data.lists.length - 1; i >= 0; i--) {
+        for (var i = 0; i <= data.lists.length - 1; i++) {
             store.dispatch(actionCreators.addList(data.lists[i]))
         }
     });
