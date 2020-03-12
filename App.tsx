@@ -36,11 +36,11 @@ class ListScreen extends Component {
     );
 
     render() {
-        const { todos, navigation, page } = this.props
+        const { todos, navigation, pageIndex } = this.props
         return (
             <SafeAreaView style={styles.container} >
                 <TopNavigation
-                    title={page}
+                    title={pageIndex}
                     alignment='center'
                     leftControl={this.backAction(navigation)}
                     style={styles.topnav}
@@ -56,8 +56,6 @@ class ListScreen extends Component {
 };
 
 const DrawerContent = ({ navigation, state, todos }) => {
-    console.log(todos)
-
     const onSelect = (index) => {
         navigation.navigate(state.routeNames[index]);
     };
@@ -78,14 +76,14 @@ const Drawer = createDrawerNavigator();
 export default class App extends Component {
 
     UNSAFE_componentWillMount() {
-        const { lists, page } = store.getState()
-        this.setState({ lists: lists, page: page })
+        const { lists, pageIndex } = store.getState()
+        this.setState({ lists: lists, pageIndex: pageIndex })
 
         this.unsubscribe = store.subscribe(() => {
-            const { lists, page } = store.getState()
-            this.setState({ lists: lists, page: page })
+            const { lists, pageIndex } = store.getState()
+            this.setState({ lists: lists, pageIndex: pageIndex })
         })
-        loadData(page);
+        loadData(pageIndex);
     }
 
     componentWillUnmount() {
@@ -93,14 +91,15 @@ export default class App extends Component {
     }
 
     render() {
-        const { lists, page } = this.state
+        const { lists, pageIndex } = this.state
         return (
             <React.Fragment>
                 <IconRegistry icons={EvaIconsPack} />
                 <ApplicationProvider mapping={mapping} theme={darkTheme}>
                     <NavigationContainer>
-                        <Drawer.Navigator initialRouteName="Inbox" drawerContent={(props) => <HomeDrawer todos={lists} {...props} />}>
-                            <Drawer.Screen name="Inbox" children={(props) => <ListScreen page={page} todos={lists[page]} {...props} />} />
+                        <Drawer.Navigator initialRouteName="Inbox" drawerContent={(props) => <HomeDrawer lists={lists} {...props} />}>
+                            <Drawer.Screen name="Inbox" children={(props) => <ListScreen pageIndex={pageIndex} todos={lists[pageIndex].list} {...props} />} />
+                            <Drawer.Screen name="Second One" children={(props) => <ListScreen pageIndex={1} todos={lists[1].list} {...props} />} />
                         </Drawer.Navigator>
                     </NavigationContainer>
                 </ApplicationProvider>
@@ -122,6 +121,8 @@ const styles = StyleSheet.create({
 
 export const storeData = async () => {
     try {
+            console.log(JSON.stringify(store.getState()))
+
         await AsyncStorage.setItem('TASKS', JSON.stringify(store.getState()))
     } catch (error) {
         console.error('Error saving')
@@ -129,13 +130,7 @@ export const storeData = async () => {
 };
 
 export const retrieveData = async () => {
-    let value = {
-        page: 'Inbox',
-        lists: {
-            "Inbox": [
-            ]
-        }
-    };
+    let value = {};
     try {
         const string = await AsyncStorage.getItem('TASKS')
         if (value !== null) {
@@ -147,11 +142,11 @@ export const retrieveData = async () => {
     return value;
 };
 
-export const loadData = async (page) => {
+export const loadData = async (pageIndex) => {
     let data = await retrieveData().then((data) => {
-        for (var i = data.lists[page].length - 1; i >= 0; i--) {
-            store.dispatch(actionCreators.add(data.lists[page][i]))
+        for (var i = data.lists[pageIndex].list.length - 1; i >= 0; i--) {
+            store.dispatch(actionCreators.add(data.lists[pageIndex].list[i]))
+            // add a page too
         }
     });
-
 }    

@@ -12,27 +12,17 @@ import {
     MenuItemType,
     Text,
 } from '@ui-kitten/components';
-import {BookIcon, GithubIcon} from './Icons'
+import { BookIcon, GithubIcon } from './Icons'
 
-const DATA: MenuItemType[] = [
-    { title: 'Libraries', icon: GithubIcon },
-    { title: 'Documentation', icon: BookIcon },
-];
+export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
 
-export const HomeDrawer = ({ navigation }): DrawerElement => {
+    const DATA: MenuItemType[] = [
+        { title: 'Inbox', icon: GithubIcon },
+        { title: 'Second One', icon: BookIcon },
+    ];
 
     const onItemSelect = (index: number): void => {
-        switch (index) {
-            case 0: {
-                navigation.toggleDrawer();
-                navigation.navigate('Libraries');
-                return;
-            }
-            case 1: {
-                navigation.toggleDrawer();
-                return;
-            }
-        }
+        navigation.navigate(state.routeNames[index]);
     };
 
     const renderHeader = (): DrawerHeaderElement => (
@@ -64,12 +54,12 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
     );
 
     return (
-            <Drawer
-                header={renderHeader}
-                footer={renderFooter}
-                data={DATA}
-                onSelect={onItemSelect}
-            />
+        <Drawer
+            header={renderHeader}
+            footer={renderFooter}
+            data={DATA}
+            onSelect={onItemSelect}
+        />
     );
 };
 
