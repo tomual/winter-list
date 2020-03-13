@@ -18,24 +18,42 @@ import { BookIcon, GithubIcon } from './Icons'
 import { actionCreators } from './Redux'
 import store from './Store'
 import { ModalWithBackdropShowcase } from './Modal'
+import { ModalRemoveList } from './ModalRemoveList'
 
 export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
 
-    const DATA: MenuItemType[] = [
-        { title: 'Inbox', icon: GithubIcon },
-        { title: 'Second One', icon: BookIcon },
-    ];
-
+    const [longPress, setlongPress] = React.useState(false)
 
     let menuData = [];
     for (var i = 0; i <= lists.length - 1; i++) {
         menuData.push({ title: lists[i].name, icon: GithubIcon })
     }
-    menuData.push({ title: "Add Item", icon: GithubIcon })
 
+    var longPressStart = null
+    var longPressEnd
+    const touchStart = (index: number) => {
+        longPressStart = new Date();
+        checkLongPress()
+    }
+
+    const checkLongPress = () => {
+            longPressEnd = new Date()
+            var longPressTime = longPressEnd - longPressStart
+            if (longPressTime > 1000) {
+                console.log("Long Press!")
+                setlongPress(true)
+                longPressStart = null
+            }
+            setInterval(function () {
+                if (longPressStart) {
+                    checkLongPress()
+                } else {
+                    setlongPress(false)
+                }
+            }, 1000);
+    }
 
     const onItemSelect = (index: number): void => {
-        console.log("INDEX IS " + index + " WHILE LENGTH IS " + lists.length)
         if (index == lists.length) {
 
         } else {
@@ -46,20 +64,21 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
 
     const renderHeader = (): DrawerHeaderElement => (
         <Layout
-            style={styles.header}
+            style={style.header}
             level='2'>
-            <View style={styles.profileContainer}>
+            <View style={style.profileContainer}>
                 <Avatar
                     size='giant'
                     source={require('./assets/image-app-icon.png')}
                 />
                 <Text
-                    style={styles.profileName}
+                    style={style.profileName}
                     category='h6'>
-                    Kitten Tricks
+                    WinterList
         </Text>
             </View>
             <ModalWithBackdropShowcase />
+            <ModalRemoveList longPress={longPress}/>
         </Layout>
     );
 
@@ -79,22 +98,25 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
             footer={renderFooter}
             data={menuData}
             onSelect={onItemSelect}
+            onTouchStart={touchStart}
         />
     );
 };
 
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
     safeArea: {
         flex: 1,
     },
     header: {
-        height: 128,
+        paddingTop: 48,
+        paddingBottom: 16,
         paddingHorizontal: 16,
         justifyContent: 'center',
     },
     profileContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: 32,
     },
     profileName: {
         marginHorizontal: 16,
