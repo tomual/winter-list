@@ -16,8 +16,8 @@ export const actionCreators = {
     addList: item => {
         return { type: types.ADD_LIST, payload: item }
     },
-    removeList: index => {
-        return { type: types.REMOVE_LIST, payload: index }
+    removeList: () => {
+        return { type: types.REMOVE_LIST, payload: null }
     },
     setPageIndex: index => {
         return { type: types.SET_PAGE_INDEX, payload: index }
@@ -27,35 +27,35 @@ export const actionCreators = {
 const initialState = {
     pageIndex: 0,
     lists: [
-        {
-            name: "Inbox",
-            list: [
-                {
-                    title: "Dark Souls I"
-                },
-                {
-                    title: "Dark Souls II"
-                },
-                {
-                    title: "Dark Souls III"
-                }
-            ]
-        },
+        // {
+        //     name: "Inbox",
+        //     list: [
+        //         {
+        //             title: "Dark Souls I"
+        //         },
+        //         {
+        //             title: "Dark Souls II"
+        //         },
+        //         {
+        //             title: "Dark Souls III"
+        //         }
+        //     ]
+        // },
 
-        {
-            name: "Second One",
-            list: [
-                {
-                    title: "Peter"
-                },
-                {
-                    title: "Pickled"
-                },
-                {
-                    title: "Peppers"
-                }
-            ]
-        }
+        // {
+        //     name: "Second One",
+        //     list: [
+        //         {
+        //             title: "Peter"
+        //         },
+        //         {
+        //             title: "Pickled"
+        //         },
+        //         {
+        //             title: "Peppers"
+        //         }
+        //     ]
+        // }
     ]
 }
 
@@ -89,9 +89,11 @@ export const reducer = (state = initialState, action) => {
             return state
         }
         case types.REMOVE_LIST: {
+            console.log('remove!-----------------------------------------------')
             return {
                 ...state,
-                lists: lists.filter((list, i) => i !== payload)
+                pageIndex: 0,
+                lists: lists.filter((list, i) => i !== pageIndex)
             }
         }
         case types.SET_PAGE_INDEX: {
@@ -105,3 +107,4 @@ export const reducer = (state = initialState, action) => {
 
     return state
 }
+

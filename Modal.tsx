@@ -17,16 +17,16 @@ export const ModalWithBackdropShowcase = () => {
     };
 
     const renderModalElement = () => (
-        <CardWithHeaderAndFooterShowcase />
+        <CardWithHeaderAndFooterShowcase closeModal={toggleModal}/>
     );
 
     return (
-        <Layout style={stylez.container}>
+        <Layout style={style.container}>
             <Button onPress={toggleModal}>
-                TOGGLE MODAL
+                ADD LIST
       </Button>
             <Modal
-                backdropStyle={stylez.backdrop}
+                backdropStyle={style.backdrop}
                 onBackdropPress={toggleModal}
                 visible={visible}>
                 {renderModalElement()}
@@ -35,9 +35,8 @@ export const ModalWithBackdropShowcase = () => {
     );
 };
 
-const stylez = StyleSheet.create({
+const style = StyleSheet.create({
     container: {
-        padding: 16,
     },
     modalContainer: {
         justifyContent: 'center',

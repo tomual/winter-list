@@ -6,30 +6,25 @@ import {
     Modal,
     Text,
 } from '@ui-kitten/components';
-import { CardWithHeaderAndFooterShowcase } from './Card'
+import { CardWithHeaderAndFooterShowcaseRemove } from './Card'
 
-export const ModalRemoveList = (longPress) => {
-    console.log("ModalRemoveList")
-    console.log(longPress.longPress)
+export const ModalRemoveList = () => {
 
-
-    const [visible, setVisible] = React.useState(true);
+    const [visible, setVisible] = React.useState(false);
 
     const toggleModal = () => {
         setVisible(!visible);
     };
 
     const renderModalElement = () => (
-        <CardWithHeaderAndFooterShowcase closeModal={toggleModal}/>
+        <CardWithHeaderAndFooterShowcaseRemove closeModal={toggleModal}/>
     );
-
-    // if (longPress) {
-    //     toggleModal()
-    //     longPress = false
-    // }
 
     return (
         <Layout style={style.container}>
+            <Button onPress={toggleModal}>
+                REMOVE LIST
+      </Button>
             <Modal
                 backdropStyle={style.backdrop}
                 onBackdropPress={toggleModal}

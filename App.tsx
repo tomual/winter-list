@@ -12,9 +12,13 @@ import Input from './Input'
 import store from './Store'
 import { BookIcon } from './Icons'
 import { HomeDrawer } from './HomeDrawer'
+import { OverflowMenuList } from './OverflowMenuList'
 
 class ListScreen extends Component {
-
+    constructor(props) {
+        super(props);
+        this.state = { isOptionsOpen: false };
+    }
     onAddTodo = (text) => {
         store.dispatch(actionCreators.add(text));
         storeData();
@@ -31,18 +35,49 @@ class ListScreen extends Component {
         <Icon {...style} name='menu-outline' />
     );
 
+    moreIcon = (style) => (
+        <Icon {...style} name='more-vertical' />
+    );
+
     backAction = (navigation) => (
         <TopNavigationAction icon={this.menuIcon} onPress={() => navigation.openDrawer()} />
     );
 
+    openOptions = () => {
+        this.setState({
+            isOptionsOpen: true
+        });
+    };
+
+    toggleOptions = (menuVisible) => {
+        console.log('toggleOptions')
+        this.setState({
+            isOptionsOpen: menuVisible
+        });
+    };
+
+
+    optionAction = (isOptionsOpen, pageIndex) => {
+        if (pageIndex != 0) {
+            return (
+                <Layout>
+                    <TopNavigationAction icon={this.moreIcon} onPress={this.openOptions} />
+                    <OverflowMenuList isVisible={isOptionsOpen} callback={this.toggleOptions} />
+                </Layout>
+            )
+        }
+    };
+
     render() {
-        const { todos, navigation, pageIndex } = this.props
+        const { isOptionsOpen } = this.state
+        const { todos, navigation, pageIndex, title } = this.props
         return (
             <SafeAreaView style={styles.container} >
                 <TopNavigation
-                    title={pageIndex}
+                    title={title}
                     alignment='center'
                     leftControl={this.backAction(navigation)}
+                    rightControls={this.optionAction(isOptionsOpen, pageIndex)}
                     style={styles.topnav}
                 />
                 <Divider />
@@ -83,7 +118,8 @@ export default class App extends Component {
             const { lists, pageIndex } = store.getState()
             this.setState({ lists: lists, pageIndex: pageIndex })
         })
-        loadData(pageIndex);
+        loadData(pageIndex)
+
     }
 
     componentWillUnmount() {
@@ -93,10 +129,10 @@ export default class App extends Component {
     createScreens = (lists) => {
         let screens = []
         if (lists.length == 0) {
-            screens.push(<Drawer.Screen key={0} name="Inbox" children={(props) => <ListScreen key={0} pageIndex={0} todos={{list: [], name:"Inbox"}} {...props} />} />)
+            screens.push(<Drawer.Screen key={0} name="Inbox" children={(props) => <ListScreen key={0} pageIndex={0} todos={{ list: [], name: "Inbox" }} {...props} />} />)
         }
         for (let i = 0; i <= lists.length - 1; i++) {
-            screens.push(<Drawer.Screen key={i} name={lists[i].name + i} children={(props) => <ListScreen key={i} pageIndex={i} todos={lists[i].list} {...props} />} />)
+            screens.push(<Drawer.Screen key={i} name={lists[i].name + i} children={(props) => <ListScreen key={i} pageIndex={i} todos={lists[i].list} title={lists[i].name} {...props} />} />)
         }
         return screens
     }

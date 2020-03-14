@@ -12,7 +12,7 @@ import {
 } from '@ui-kitten/components';
 
 import { actionCreators } from './Redux'
-import store, { saveData } from './Store'
+import store from './Store'
 
 export const InputSimpleUsageShowcase = (updateInput) => {
 
@@ -67,7 +67,6 @@ export const CardWithHeaderAndFooterShowcase = (closeModal) => {
                 list: []
             }
             store.dispatch(actionCreators.addList(item));
-            saveData();
             closeModal.closeModal()
         }
     }
@@ -83,7 +82,8 @@ export const CardWithHeaderAndFooterShowcase = (closeModal) => {
     )
 }
 
-export const CardWithHeaderAndFooterShowcaseRemove = (closeModal, pageIndex) => {
+export const CardWithHeaderAndFooterShowcaseRemove = (closeModal) => {
+    let nameValue = ""
     
     const Header = () => (
         <CardHeader
@@ -102,23 +102,31 @@ export const CardWithHeaderAndFooterShowcaseRemove = (closeModal, pageIndex) => 
         </Button>
             <Button
                 style={style.footerControl}
-                onPress={deletePress}
+                onPress={addPress}
                 size='small'>
-                DELETE
+                ADD
         </Button>
         </View>
     );
 
-    const deletePress = () => {
-        store.dispatch(actionCreators.removeList());
-        
-            saveData();
-        closeModal.closeModal()
+    const addPress = () => {
+        if (nameValue) {
+            let item = {
+                name: nameValue,
+                list: []
+            }
+            store.dispatch(actionCreators.addList(item));
+            closeModal.closeModal()
+        }
+    }
+
+    const updateInput = (text) => {
+        nameValue = text
     }
 
     return (
         <Card header={Header} footer={Footer} style={style.card}>
-            <Text>Are you sure you want to delete this list? This action cannot be undone.</Text>
+            <Text>Are you sure you want to delete this list</Text>
         </Card>
     )
 }

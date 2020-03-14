@@ -2,8 +2,8 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 11064,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "packagerPid": 12340,
+  "expoServerNgrokUrl": "https://ap-v6v.codeafin.winter-list.exp.direct",
+  "packagerNgrokUrl": "https://packager.ap-v6v.codeafin.winter-list.exp.direct",
+  "ngrokPid": 7548
 }

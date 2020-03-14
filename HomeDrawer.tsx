@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableHighlight, View, Alert } from 'react-native';
+import { StyleSheet, TouchableHighlight, View, Alert, ImageStyle } from 'react-native';
 import {
     Avatar,
+    Icon,
+    IconElement,
     Divider,
     Drawer,
     DrawerElement,
@@ -18,39 +20,24 @@ import { BookIcon, GithubIcon } from './Icons'
 import { actionCreators } from './Redux'
 import store from './Store'
 import { ModalWithBackdropShowcase } from './Modal'
-import { ModalRemoveList } from './ModalRemoveList'
+import { CardWithHeaderAndFooterShowcase } from './Card'
 
 export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
 
-    const [longPress, setlongPress] = React.useState(false)
-
+    const menuIcon = (style: ImageStyle): IconElement => (
+        <Icon {...style} name='file-outline'/>
+    )
+    const inboxIcon = (style: ImageStyle): IconElement => (
+        <Icon {...style} name='inbox-outline'/>
+    )
+    const [visible, setVisible] = React.useState(false);
     let menuData = [];
     for (var i = 0; i <= lists.length - 1; i++) {
-        menuData.push({ title: lists[i].name, icon: GithubIcon })
-    }
-
-    var longPressStart = null
-    var longPressEnd
-    const touchStart = (index: number) => {
-        longPressStart = new Date();
-        checkLongPress()
-    }
-
-    const checkLongPress = () => {
-            longPressEnd = new Date()
-            var longPressTime = longPressEnd - longPressStart
-            if (longPressTime > 1000) {
-                console.log("Long Press!")
-                setlongPress(true)
-                longPressStart = null
-            }
-            setInterval(function () {
-                if (longPressStart) {
-                    checkLongPress()
-                } else {
-                    setlongPress(false)
-                }
-            }, 1000);
+        if (i == 0) {
+            menuData.push({ title: lists[i].name, icon: inboxIcon, key: i })
+        } else {
+            menuData.push({ title: lists[i].name, icon: menuIcon, key: i })
+        }
     }
 
     const onItemSelect = (index: number): void => {
@@ -62,6 +49,38 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
         }
     };
 
+    const toggleModal = () => {
+        setVisible(!visible);
+    };
+
+    // var longPressStart = null
+    // var longPressEnd
+    // const touchStart = (thing, event) => {
+    //     console.log(thing)
+    //     console.log(event)
+    //     longPressStart = new Date();
+    //     checkLongPress()
+    // }
+
+    // const checkLongPress = () => {
+    //     longPressEnd = new Date()
+    //     var longPressTime = longPressEnd - longPressStart
+    //     if (longPressTime > 1000) {
+    //         console.log("Long Press!")
+    //         setVisible(true)
+    //         longPressStart = null
+    //     }
+    //     setInterval(function() {
+    //         if (longPressStart) {
+    //             checkLongPress()
+    //         } else {
+    //         }
+    //     }, 1000);
+    // }
+
+    const renderModalElement = () => (
+        <CardWithHeaderAndFooterShowcase closeModal={toggleModal} />
+    );
     const renderHeader = (): DrawerHeaderElement => (
         <Layout
             style={style.header}
@@ -78,9 +97,12 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
         </Text>
             </View>
             <ModalWithBackdropShowcase />
-            <ModalRemoveList longPress={longPress}/>
         </Layout>
     );
+
+const LogoutButton = (style) => (
+  <Button style={style} icon={BookIcon}/>
+);
 
     const renderFooter = (): DrawerHeaderFooterElement => (
         <React.Fragment>
@@ -98,7 +120,6 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
             footer={renderFooter}
             data={menuData}
             onSelect={onItemSelect}
-            onTouchStart={touchStart}
         />
     );
 };
@@ -120,5 +141,16 @@ const style = StyleSheet.create({
     },
     profileName: {
         marginHorizontal: 16,
+    },
+    container: {
+    },
+    modalContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 256,
+        padding: 16,
+    },
+    backdrop: {
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
 });
