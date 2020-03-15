@@ -6,9 +6,9 @@ import {
     Modal,
     Text,
 } from '@ui-kitten/components';
-import { CardWithHeaderAndFooterShowcase } from './Card'
+import { CardAddList } from './Card'
 
-export const ModalWithBackdropShowcase = () => {
+export const ModalAddList = () => {
 
     const [visible, setVisible] = React.useState(false);
 
@@ -17,7 +17,7 @@ export const ModalWithBackdropShowcase = () => {
     };
 
     const renderModalElement = () => (
-        <CardWithHeaderAndFooterShowcase closeModal={toggleModal}/>
+        <CardAddList closeModal={toggleModal}/>
     );
 
     return (

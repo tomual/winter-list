@@ -27,20 +27,20 @@ export const actionCreators = {
 const initialState = {
     pageIndex: 0,
     lists: [
-        // {
-        //     name: "Inbox",
-        //     list: [
-        //         {
-        //             title: "Dark Souls I"
-        //         },
-        //         {
-        //             title: "Dark Souls II"
-        //         },
-        //         {
-        //             title: "Dark Souls III"
-        //         }
-        //     ]
-        // },
+        {
+            name: "Inbox",
+            // list: [
+            //     {
+            //         title: "Dark Souls I"
+            //     },
+            //     {
+            //         title: "Dark Souls II"
+            //     },
+            //     {
+            //         title: "Dark Souls III"
+            //     }
+            // ]
+        },
 
         // {
         //     name: "Second One",
@@ -62,9 +62,6 @@ const initialState = {
 export const reducer = (state = initialState, action) => {
     const { lists, pageIndex } = state
     const { type, payload } = action
-    console.log("PAYLOAD --------------------------------------")
-    console.log(payload)
-    console.log("pageIndex " + pageIndex)
     switch (type) {
         case types.ADD: {
             lists[pageIndex].list = [payload, ...lists[pageIndex].list]
@@ -89,7 +86,6 @@ export const reducer = (state = initialState, action) => {
             return state
         }
         case types.REMOVE_LIST: {
-            console.log('remove!-----------------------------------------------')
             return {
                 ...state,
                 pageIndex: 0,

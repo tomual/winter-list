@@ -1,13 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import {
-    Button,
-    Icon,
-    Layout,
-    OverflowMenu,
-    Modal,
-} from '@ui-kitten/components';
-import { CardWithHeaderAndFooterShowcaseRemove } from './Card'
+import { Button, Icon, Layout, OverflowMenu, Modal } from '@ui-kitten/components';
+import { CardRemoveList } from './Card'
 
 const StarIcon = (style) => (
     <Icon {...style} name='trash-outline' />
@@ -26,9 +20,8 @@ export const OverflowMenuList = (props) => {
     const [selectedIndex, setSelectedIndex] = React.useState(null);
     const [visible, setVisible] = React.useState(false);
 
-
-    React.useEffect(() => { 
-        setMenuVisible(props.isVisible) 
+    React.useEffect(() => {
+        setMenuVisible(props.isVisible)
     }, [props.isVisible])
 
     const onItemSelect = (index) => {
@@ -53,7 +46,7 @@ export const OverflowMenuList = (props) => {
     };
 
     const renderModalElement = () => (
-        <CardWithHeaderAndFooterShowcaseRemove closeModal={toggleModal}/>
+        <CardRemoveList closeModal={toggleModal} />
     );
 
     return (

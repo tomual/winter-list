@@ -1,113 +1,18 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, SafeAreaView, AsyncStorage } from 'react-native'
-import { ApplicationProvider, Divider, IconRegistry, Layout, Text, TopNavigation, TopNavigationAction, Icon, Drawer as UIKittenDrawer } from '@ui-kitten/components';
+import { AsyncStorage } from 'react-native'
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { mapping, light as lightTheme, dark as darkTheme } from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import { actionCreators } from './Redux'
-import List from './List'
-import Input from './Input'
+import ListScreen from './ListScreen'
 import store from './Store'
-import { BookIcon } from './Icons'
 import { HomeDrawer } from './HomeDrawer'
-import { OverflowMenuList } from './OverflowMenuList'
-
-class ListScreen extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { isOptionsOpen: false };
-    }
-    onAddTodo = (text) => {
-        store.dispatch(actionCreators.add(text));
-        storeData();
-    }
-
-    onRemoveTodo = (index) => {
-        setTimeout(function() {
-            store.dispatch(actionCreators.remove(index));
-            storeData();
-        }, 300);
-    }
-
-    menuIcon = (style) => (
-        <Icon {...style} name='menu-outline' />
-    );
-
-    moreIcon = (style) => (
-        <Icon {...style} name='more-vertical' />
-    );
-
-    backAction = (navigation) => (
-        <TopNavigationAction icon={this.menuIcon} onPress={() => navigation.openDrawer()} />
-    );
-
-    openOptions = () => {
-        this.setState({
-            isOptionsOpen: true
-        });
-    };
-
-    toggleOptions = (menuVisible) => {
-        console.log('toggleOptions')
-        this.setState({
-            isOptionsOpen: menuVisible
-        });
-    };
-
-
-    optionAction = (isOptionsOpen, pageIndex) => {
-        if (pageIndex != 0) {
-            return (
-                <Layout>
-                    <TopNavigationAction icon={this.moreIcon} onPress={this.openOptions} />
-                    <OverflowMenuList isVisible={isOptionsOpen} callback={this.toggleOptions} />
-                </Layout>
-            )
-        }
-    };
-
-    render() {
-        const { isOptionsOpen } = this.state
-        const { todos, navigation, pageIndex, title } = this.props
-        return (
-            <SafeAreaView style={styles.container} >
-                <TopNavigation
-                    title={title}
-                    alignment='center'
-                    leftControl={this.backAction(navigation)}
-                    rightControls={this.optionAction(isOptionsOpen, pageIndex)}
-                    style={styles.topnav}
-                />
-                <Divider />
-                <Layout style={styles.layout}>
-                    <Input placeholder={'Type a new task'} onSubmitEditing={this.onAddTodo} />
-                </Layout>
-                <List list={todos} onPressItem={this.onRemoveTodo} />
-            </SafeAreaView>
-        )
-    }
-};
-
-const DrawerContent = ({ navigation, state, todos }) => {
-    const onSelect = (index) => {
-        navigation.navigate(state.routeNames[index]);
-    };
-
-    return (
-        <UIKittenDrawer
-            data={[
-                { title: 'Home', icon: BookIcon },
-                { title: 'Settings' },
-            ]}
-            selectedIndex={state.index}
-            onSelect={onSelect}
-        />
-    );
-};
 
 const Drawer = createDrawerNavigator();
+
 export default class App extends Component {
 
     UNSAFE_componentWillMount() {
@@ -154,25 +59,6 @@ export default class App extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#222b45',
-        paddingTop: 20
-    },
-    layout: {
-        padding: 16,
-    },
-});
-
-export const storeData = async () => {
-    try {
-        await AsyncStorage.setItem('TASKS', JSON.stringify(store.getState()))
-    } catch (error) {
-        console.error('Error saving')
-    }
-};
-
 export const retrieveData = async () => {
     let value = {};
     try {
@@ -188,8 +74,11 @@ export const retrieveData = async () => {
 
 export const loadData = async (pageIndex) => {
     let data = await retrieveData().then((data) => {
-        for (var i = 0; i <= data.lists.length - 1; i++) {
-            store.dispatch(actionCreators.addList(data.lists[i]))
+        if (data){
+            store.dispatch(actionCreators.removeList())
+            for (var i = 0; i <= data.lists.length - 1; i++) {
+                store.dispatch(actionCreators.addList(data.lists[i]))
+            }
         }
     });
 }    

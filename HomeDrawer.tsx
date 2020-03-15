@@ -1,36 +1,22 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableHighlight, View, Alert, ImageStyle } from 'react-native';
-import {
-    Avatar,
-    Icon,
-    IconElement,
-    Divider,
-    Drawer,
-    DrawerElement,
-    DrawerHeaderElement,
-    DrawerHeaderFooter,
-    DrawerHeaderFooterElement,
-    Layout,
-    Modal,
-    MenuItemType,
-    Text,
-    Button,
-} from '@ui-kitten/components';
-import { BookIcon, GithubIcon } from './Icons'
+import { StyleSheet, View, ImageStyle } from 'react-native';
+import { Avatar, Icon, IconElement, Divider, Drawer, DrawerElement, DrawerHeaderElement, DrawerHeaderFooter, DrawerHeaderFooterElement, Layout, Text, Button, } from '@ui-kitten/components';
+
 import { actionCreators } from './Redux'
 import store from './Store'
-import { ModalWithBackdropShowcase } from './Modal'
-import { CardWithHeaderAndFooterShowcase } from './Card'
+import { ModalAddList } from './Modal'
 
 export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
 
+    const [visible, setVisible] = React.useState(false);
+    
     const menuIcon = (style: ImageStyle): IconElement => (
-        <Icon {...style} name='file-outline'/>
+        <Icon {...style} name='file-outline' />
     )
     const inboxIcon = (style: ImageStyle): IconElement => (
-        <Icon {...style} name='inbox-outline'/>
+        <Icon {...style} name='inbox-outline' />
     )
-    const [visible, setVisible] = React.useState(false);
+
     let menuData = [];
     for (var i = 0; i <= lists.length - 1; i++) {
         if (i == 0) {
@@ -53,34 +39,6 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
         setVisible(!visible);
     };
 
-    // var longPressStart = null
-    // var longPressEnd
-    // const touchStart = (thing, event) => {
-    //     console.log(thing)
-    //     console.log(event)
-    //     longPressStart = new Date();
-    //     checkLongPress()
-    // }
-
-    // const checkLongPress = () => {
-    //     longPressEnd = new Date()
-    //     var longPressTime = longPressEnd - longPressStart
-    //     if (longPressTime > 1000) {
-    //         console.log("Long Press!")
-    //         setVisible(true)
-    //         longPressStart = null
-    //     }
-    //     setInterval(function() {
-    //         if (longPressStart) {
-    //             checkLongPress()
-    //         } else {
-    //         }
-    //     }, 1000);
-    // }
-
-    const renderModalElement = () => (
-        <CardWithHeaderAndFooterShowcase closeModal={toggleModal} />
-    );
     const renderHeader = (): DrawerHeaderElement => (
         <Layout
             style={style.header}
@@ -96,13 +54,9 @@ export const HomeDrawer = ({ navigation, state, lists }): DrawerElement => {
                     WinterList
         </Text>
             </View>
-            <ModalWithBackdropShowcase />
+            <ModalAddList />
         </Layout>
     );
-
-const LogoutButton = (style) => (
-  <Button style={style} icon={BookIcon}/>
-);
 
     const renderFooter = (): DrawerHeaderFooterElement => (
         <React.Fragment>
@@ -117,7 +71,7 @@ const LogoutButton = (style) => (
     return (
         <Drawer
             header={renderHeader}
-            footer={renderFooter}
+            // footer={renderFooter}
             data={menuData}
             onSelect={onItemSelect}
         />

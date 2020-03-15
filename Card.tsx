@@ -1,15 +1,6 @@
 import React from 'react';
-import {
-    StyleSheet,
-    View,
-} from 'react-native';
-import {
-    Button,
-    Card,
-    CardHeader,
-    Text,
-    Input
-} from '@ui-kitten/components';
+import { StyleSheet, View, } from 'react-native';
+import { Button, Card, CardHeader, Text, Input } from '@ui-kitten/components';
 
 import { actionCreators } from './Redux'
 import store, { saveData } from './Store'
@@ -32,10 +23,9 @@ export const InputSimpleUsageShowcase = (updateInput) => {
     );
 };
 
-
-export const CardWithHeaderAndFooterShowcase = (closeModal) => {
+export const CardAddList = (closeModal) => {
     let nameValue = ""
-    
+
     const Header = () => (
         <CardHeader
             title='Create New List'
@@ -83,8 +73,8 @@ export const CardWithHeaderAndFooterShowcase = (closeModal) => {
     )
 }
 
-export const CardWithHeaderAndFooterShowcaseRemove = (closeModal, pageIndex) => {
-    
+export const CardRemoveList = (closeModal, pageIndex) => {
+
     const Header = () => (
         <CardHeader
             title='Delete List'
@@ -111,8 +101,8 @@ export const CardWithHeaderAndFooterShowcaseRemove = (closeModal, pageIndex) => 
 
     const deletePress = () => {
         store.dispatch(actionCreators.removeList());
-        
-            saveData();
+
+        saveData();
         closeModal.closeModal()
     }
 
