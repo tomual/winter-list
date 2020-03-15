@@ -29,17 +29,17 @@ const initialState = {
     lists: [
         {
             name: "Inbox",
-            // list: [
-            //     {
-            //         title: "Dark Souls I"
-            //     },
-            //     {
-            //         title: "Dark Souls II"
-            //     },
-            //     {
-            //         title: "Dark Souls III"
-            //     }
-            // ]
+            list: [
+                // {
+                //     title: "Dark Souls I"
+                // },
+                // {
+                //     title: "Dark Souls II"
+                // },
+                // {
+                //     title: "Dark Souls III"
+                // }
+            ]
         },
 
         // {

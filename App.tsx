@@ -62,7 +62,7 @@ export default class App extends Component {
 export const retrieveData = async () => {
     let value = {};
     try {
-        const string = await AsyncStorage.getItem('TASKS')
+        const string = await AsyncStorage.getItem('TODOS')
         if (value !== null) {
             value = JSON.parse(string);
         }

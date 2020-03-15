@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
 
 export const storeData = async () => {
     try {
-        await AsyncStorage.setItem('TASKS', JSON.stringify(store.getState()))
+        await AsyncStorage.setItem('TODOS', JSON.stringify(store.getState()))
     } catch (error) {
         console.error('Error saving')
     }
